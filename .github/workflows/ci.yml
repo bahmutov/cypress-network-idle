@@ -10,13 +10,6 @@ jobs:
 
       - name: Cypress tests 🧪
         uses: cypress-io/github-action@v2
-        with:
-          # check types
-          build: npm run lint
-          # use a custom command to conform all expected tests
-          # were correctly generated
-          # using https://www.npmjs.com/package/cypress-expect
-          command: npm test
 
       - name: Semantic Release 🚀
         uses: cycjimmy/semantic-release-action@v2

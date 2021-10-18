@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <title>Example</title>
+  </head>
+  <body>
+    <h1>cypress-network-idle</h1>
+    <script>
+      setTimeout(() => {
+        fetch('https://jsonplaceholder.cypress.io/users/1').then((r) =>
+          r.json(),
+        )
+      }, 1000)
+
+      setTimeout(() => {
+        fetch('https://jsonplaceholder.cypress.io/users/2').then((r) =>
+          r.json(),
+        )
+      }, 1500)
+    </script>
+  </body>
+</html>
