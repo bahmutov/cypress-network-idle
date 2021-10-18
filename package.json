@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A little Cypress.io plugin for waiting for network to be idle before continuing with the test",
   "main": "src/index.js",
+  "files": [
+    "src"
+  ],
   "scripts": {
     "test": "cypress run",
     "cy:open": "cypress open"
