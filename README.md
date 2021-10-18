@@ -1,6 +1,63 @@
 # cypress-network-idle ![cypress version](https://img.shields.io/badge/cypress-8.6.0-brightgreen) [![renovate-app badge][renovate-badge]][renovate-app] [![ci](https://github.com/bahmutov/cypress-network-idle/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/bahmutov/cypress-network-idle/actions/workflows/ci.yml)
 > A little Cypress.io plugin for waiting for network to be idle before continuing with the test
 
+## Install
+
+```
+# install using NPM
+npm i -D cypress-network-idle
+# install using Yarn
+yarn add -D cypress-network-idle
+```
+
+Import or require this plugin from the support file or from the spec file
+
+```js
+import 'cypress-network-idle'
+```
+
+## Use
+
+Wait for two seconds to pass without any network calls (Ajax, static resources)
+
+```js
+cy.waitForNetworkIdle(2000)
+```
+
+Wait one second without any calls to `/v1/api` endpoint
+
+```js
+cy.waitForNetworkIdle('/v1/api', 1000)
+```
+
+Wait for 5 seconds without any `POST` calls to `/graphql` endpoint
+
+```js
+cy.waitForNetworkIdle('POST', '/graphql', 5000)
+```
+
+## Yields
+
+The command yields an object with a few timestamps and the number of network calls. See the [src/index.d.ts](./src/index.d.ts) for precise fields
+
+```js
+cy.waitForNetworkIdle(2000)
+  // check how long the command waited
+  .its('waited')
+  // it should have waited for at least 2 seconds
+  // but could be up to 3 seconds if the app
+  // made a call one second after the start
+  .should('be.within', 2000, 3000)
+```
+
+## Types
+
+This plugin includes the TypeScript types, import them from your JavaScript files using the reference types comment or via TS config.
+
+```js
+/// <reference types="cypress-network-idle" />
+```
+
 ## Small print
 
 Author: Gleb Bahmutov &lt;gleb.bahmutov@gmail.com&gt; &copy; 2021
