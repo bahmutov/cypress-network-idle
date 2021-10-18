@@ -1,6 +1,6 @@
 {
   "name": "cypress-network-idle",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "A little Cypress.io plugin for waiting for network to be idle before continuing with the test",
   "main": "src/index.js",
   "files": [
@@ -8,11 +8,12 @@
   ],
   "scripts": {
     "test": "cypress run",
-    "cy:open": "cypress open"
+    "cy:open": "cypress open",
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bahmutov/cypress-network-idle.git"
+    "url": "https://github.com/bahmutov/cypress-network-idle.git"
   },
   "keywords": [
     "cypress-plugin",
@@ -26,6 +27,7 @@
   "homepage": "https://github.com/bahmutov/cypress-network-idle#readme",
   "devDependencies": {
     "cypress": "^8.6.0",
-    "prettier": "^2.4.1"
+    "prettier": "^2.4.1",
+    "semantic-release": "^18.0.0"
   }
 }
