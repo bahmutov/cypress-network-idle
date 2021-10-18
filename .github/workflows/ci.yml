@@ -1,0 +1,29 @@
+name: ci
+on: [push]
+jobs:
+  tests:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v2
+
+      - name: Cypress tests 🧪
+        uses: cypress-io/github-action@v2
+        with:
+          # check types
+          build: npm run lint
+          # use a custom command to conform all expected tests
+          # were correctly generated
+          # using https://www.npmjs.com/package/cypress-expect
+          command: npm test
+
+      - name: Semantic Release 🚀
+        uses: cycjimmy/semantic-release-action@v2
+        with:
+          branches: main
+        env:
+          # github token is automatically created by the GH Action workflow
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # created using semantic-release
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
