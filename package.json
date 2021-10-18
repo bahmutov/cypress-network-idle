@@ -3,6 +3,7 @@
   "version": "0.0.0-development",
   "description": "A little Cypress.io plugin for waiting for network to be idle before continuing with the test",
   "main": "src/index.js",
+  "types": "src",
   "files": [
     "src"
   ],
