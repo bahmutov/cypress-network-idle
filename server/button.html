@@ -7,7 +7,16 @@
     <button id="fetch">Fetch</button>
     <script>
       document.getElementById('fetch').addEventListener('click', () => {
-        fetch('/user').then((r) => r.json())
+        fetch('/user')
+          .then((r) => r.json())
+          .then((user) => {
+            if (typeof user !== 'object') {
+              throw new Error('User is not an object')
+            }
+            if (user.name !== 'John Doe') {
+              throw new Error('User name is not John Doe')
+            }
+          })
       })
     </script>
   </body>

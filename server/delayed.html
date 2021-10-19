@@ -7,10 +7,19 @@
     <script>
       setTimeout(() => {
         console.log('/users/delayed req:', +new Date())
-        fetch('/user/delayed').then((r) => {
-          console.log('/users/delayed res:', +new Date())
-          return r.json()
-        })
+        fetch('/user/delayed')
+          .then((r) => {
+            console.log('/users/delayed res:', +new Date())
+            return r.json()
+          })
+          .then((user) => {
+            if (typeof user !== 'object') {
+              throw new Error('User is not an object')
+            }
+            if (user.name !== 'John Doe') {
+              throw new Error('User name is not John Doe')
+            }
+          })
       }, 1500)
     </script>
   </body>

@@ -6,7 +6,16 @@
     <h1>cypress-network-idle</h1>
     <script>
       setTimeout(() => {
-        fetch('/user').then((r) => r.json())
+        fetch('/user')
+          .then((r) => r.json())
+          .then((user) => {
+            if (typeof user !== 'object') {
+              throw new Error('User is not an object')
+            }
+            if (user.name !== 'John Doe') {
+              throw new Error('User name is not John Doe')
+            }
+          })
       }, 1000)
     </script>
   </body>
