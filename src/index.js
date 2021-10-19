@@ -1,6 +1,59 @@
 /// <reference types="cypress" />
 
-function waitForNetworkIdle(a1, a2, a3) {
+function waitForIdle(counters, timeLimitMs) {
+  counters.started = +new Date()
+  counters.finished
+  cy.log(`network idle for ${timeLimitMs} ms`)
+  cy.wrap('waiting...', { timeout: timeLimitMs * 3 })
+    .should(() => {
+      const t = counters.lastNetworkAt || counters.started
+      const elapsed = +new Date() - t
+      if (elapsed < timeLimitMs) {
+        // console.log('t =', t)
+        // console.log('elapsed', elapsed)
+        // console.log('timeLimitMs', timeLimitMs)
+        throw new Error('Network is busy')
+      }
+      counters.finished = +new Date()
+    })
+    .then(() => {
+      const waited = counters.finished - counters.started
+      cy.log(`finished after ${waited} ms`)
+      cy.wrap(
+        {
+          started: counters.started,
+          finished: counters.finished,
+          waited,
+          callCount: counters.callCount,
+        },
+        { log: false },
+      )
+    })
+}
+
+function waitForNetworkIdleImpl({ method, pattern, timeLimitMs }) {
+  const counters = {
+    callCount: 0,
+    lastNetworkAt: null,
+  }
+
+  // let callCount = 0
+  // let lastNetworkAt
+  cy.intercept(method, pattern, (req) => {
+    counters.callCount += 1
+    counters.lastNetworkAt = +new Date()
+    // console.log('out req at ', lastNetworkAt)
+    req.continue(() => {
+      // count the response timestamp
+      counters.lastNetworkAt = +new Date()
+      // console.log('response at', lastNetworkAt)
+    })
+  })
+
+  waitForIdle(counters, timeLimitMs)
+}
+
+function parseArgs(a1, a2, a3) {
   let method = 'GET'
   let pattern = '*'
   let timeLimitMs = 2000
@@ -20,39 +73,48 @@ function waitForNetworkIdle(a1, a2, a3) {
     throw new Error('Invalid arguments')
   }
 
-  let callCount = 0
-  let lastNetworkAt
+  return { method, pattern, timeLimitMs }
+}
+
+function waitForNetworkIdle(a1, a2, a3) {
+  if (typeof a1 === 'string' && a1.startsWith('@') && typeof a2 === 'number') {
+    const alias = a1.substr(1)
+
+    const counters = Cypress.env(`networkIdleCounters_${alias}`)
+    if (!counters) {
+      throw new Error(`cypress-network-idle: "${alias}" not found`)
+    }
+    const timeLimitMs = a2
+    return waitForIdle(counters, timeLimitMs)
+  }
+
+  const { method, pattern, timeLimitMs } = parseArgs(a1, a2, a3)
+
+  waitForNetworkIdleImpl({ method, pattern, timeLimitMs })
+}
+
+function waitForNetworkIdlePrepare({ method, pattern, alias } = {}) {
+  if (!alias) {
+    throw new Error('cypress-network-idle: alias is required')
+  }
+
+  const counters = {
+    callCount: 0,
+    lastNetworkAt: null,
+  }
+  Cypress.env(`networkIdleCounters_${alias}`, counters)
+
   cy.intercept(method, pattern, (req) => {
-    callCount += 1
-    lastNetworkAt = +new Date()
+    counters.callCount += 1
+    counters.lastNetworkAt = +new Date()
     // console.log('out req at ', lastNetworkAt)
     req.continue(() => {
       // count the response timestamp
-      lastNetworkAt = +new Date()
+      counters.lastNetworkAt = +new Date()
       // console.log('response at', lastNetworkAt)
     })
-  })
-
-  const started = +new Date()
-  let finished
-  cy.log(`network idle for ${timeLimitMs} ms`)
-  cy.wrap('waiting...', { timeout: timeLimitMs * 3 })
-    .should(() => {
-      const t = lastNetworkAt || started
-      const elapsed = +new Date() - t
-      if (elapsed < timeLimitMs) {
-        // console.log('t =', t)
-        // console.log('elapsed', elapsed)
-        // console.log('timeLimitMs', timeLimitMs)
-        throw new Error('Network is busy')
-      }
-      finished = +new Date()
-    })
-    .then(() => {
-      const waited = finished - started
-      cy.log(`finished after ${waited} ms`)
-      cy.wrap({ started, finished, waited, callCount }, { log: false })
-    })
+  }).as(alias)
 }
 
 Cypress.Commands.add('waitForNetworkIdle', waitForNetworkIdle)
+Cypress.Commands.add('waitForNetworkIdlePrepare', waitForNetworkIdlePrepare)

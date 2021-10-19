@@ -1,0 +1,14 @@
+<html>
+  <head>
+    <title>Example</title>
+  </head>
+  <body>
+    <h1>cypress-network-idle button</h1>
+    <button id="fetch">Fetch</button>
+    <script>
+      document.getElementById('fetch').addEventListener('click', () => {
+        fetch('/user').then((r) => r.json())
+      })
+    </script>
+  </body>
+</html>
