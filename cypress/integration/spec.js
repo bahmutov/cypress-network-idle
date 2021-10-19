@@ -15,3 +15,24 @@ it('waits for the network call', () => {
       expect(callCount, 'callCount').to.equal(1)
     })
 })
+
+it('spy works', () => {
+  cy.intercept('GET', '**/user').as('testUser')
+  cy.visit('/')
+  cy.wait('@testUser')
+})
+
+it('can spy separately', () => {
+  cy.intercept('GET', '**/user').as('testUser')
+  cy.visit('/')
+  cy.wait('@testUser')
+
+  cy.waitForNetworkIdle(2000)
+    .should('have.keys', 'started', 'finished', 'waited', 'callCount')
+    .then(({ waited, callCount }) => {
+      // since we already waited for the Ajax call
+      // we finish without any more calls
+      expect(waited, 'waited ms').to.be.within(2000, 2200)
+      expect(callCount, 'callCount').to.equal(0)
+    })
+})
