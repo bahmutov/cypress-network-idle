@@ -1,6 +1,6 @@
 /// <reference path="../../src/index.d.ts" />
 
-import('../..')
+import '../..'
 
 it('waits for the network call', () => {
   cy.visit('/')

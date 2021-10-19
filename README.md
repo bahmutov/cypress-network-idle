@@ -40,6 +40,23 @@ Wait for 5 seconds without any `POST` calls to `/graphql` endpoint
 cy.waitForNetworkIdle('POST', '/graphql', 5000)
 ```
 
+## Separate prepare
+
+Sometimes the network calls start early. For example, if the network calls are kicked off by the `cy.visit` you want to start capturing the timestamps before it, but wait for the network to be idle after. You can start listening using the `prepare` call like this.
+
+```js
+cy.waitForNetworkIdlePrepare({
+  method: 'GET',
+  pattern: '*',
+  alias: 'calls',
+})
+cy.visit('/')
+// now wait for the "@calls" to finish
+cy.waitForNetworkIdle('@calls', 1000)
+```
+
+Notice the use of the alias parameter to correctly listen to the intercepted calls.
+
 ## Yields
 
 The command yields an object with a few timestamps and the number of network calls. See the [src/index.d.ts](./src/index.d.ts) for precise fields

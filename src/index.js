@@ -78,6 +78,14 @@ function parseArgs(a1, a2, a3) {
 
 function waitForNetworkIdle(a1, a2, a3) {
   if (typeof a1 === 'string' && a1.startsWith('@') && typeof a2 === 'number') {
+    const alias = a1.substr(1)
+
+    const counters = Cypress.env(`networkIdleCounters_${alias}`)
+    if (!counters) {
+      throw new Error(`cypress-network-idle: "${alias}" not found`)
+    }
+    const timeLimitMs = a2
+    return waitForIdle(counters, timeLimitMs)
   }
 
   const { method, pattern, timeLimitMs } = parseArgs(a1, a2, a3)
@@ -90,10 +98,11 @@ function waitForNetworkIdlePrepare({ method, pattern, alias } = {}) {
     throw new Error('cypress-network-idle: alias is required')
   }
 
-  const counters = (this[alias] = {
+  const counters = {
     callCount: 0,
     lastNetworkAt: null,
-  })
+  }
+  Cypress.env(`networkIdleCounters_${alias}`, counters)
 
   cy.intercept(method, pattern, (req) => {
     counters.callCount += 1
