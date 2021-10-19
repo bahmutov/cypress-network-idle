@@ -27,8 +27,8 @@
   },
   "homepage": "https://github.com/bahmutov/cypress-network-idle#readme",
   "devDependencies": {
-    "cypress": "^8.6.0",
+    "cypress": "8.6.0",
     "prettier": "^2.4.1",
-    "semantic-release": "^18.0.0"
+    "semantic-release": "18.0.0"
   }
 }
