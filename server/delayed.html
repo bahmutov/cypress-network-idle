@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title>Example</title>
+  </head>
+  <body>
+    <h1>cypress-network-idle delayed</h1>
+    <script>
+      setTimeout(() => {
+        console.log('/users/delayed req:', +new Date())
+        fetch('/user/delayed').then((r) => {
+          console.log('/users/delayed res:', +new Date())
+          return r.json()
+        })
+      }, 1500)
+    </script>
+  </body>
+</html>
