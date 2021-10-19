@@ -25,11 +25,11 @@ function waitForNetworkIdle(a1, a2, a3) {
   cy.intercept(method, pattern, (req) => {
     callCount += 1
     lastNetworkAt = +new Date()
-    console.log('out req at ', lastNetworkAt)
+    // console.log('out req at ', lastNetworkAt)
     req.continue(() => {
       // count the response timestamp
       lastNetworkAt = +new Date()
-      console.log('response at', lastNetworkAt)
+      // console.log('response at', lastNetworkAt)
     })
   })
 
@@ -41,9 +41,9 @@ function waitForNetworkIdle(a1, a2, a3) {
       const t = lastNetworkAt || started
       const elapsed = +new Date() - t
       if (elapsed < timeLimitMs) {
-        console.log('t =', t)
-        console.log('elapsed', elapsed)
-        console.log('timeLimitMs', timeLimitMs)
+        // console.log('t =', t)
+        // console.log('elapsed', elapsed)
+        // console.log('timeLimitMs', timeLimitMs)
         throw new Error('Network is busy')
       }
       finished = +new Date()
