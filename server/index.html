@@ -9,6 +9,7 @@
         fetch('/user')
           .then((r) => r.json())
           .then((user) => {
+            console.log('got object', user)
             if (typeof user !== 'object') {
               throw new Error('User is not an object')
             }

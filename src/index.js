@@ -37,8 +37,6 @@ function waitForNetworkIdleImpl({ method, pattern, timeLimitMs }) {
     lastNetworkAt: null,
   }
 
-  // let callCount = 0
-  // let lastNetworkAt
   cy.intercept(method, pattern, (req) => {
     counters.callCount += 1
     counters.lastNetworkAt = +new Date()
