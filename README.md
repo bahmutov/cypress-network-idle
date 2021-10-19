@@ -4,6 +4,7 @@
 ## Videos
 
 - [Cypress-network-idle plugin](https://youtu.be/adHjTf5j6uE)
+- [Prepare Intercept And Wait Using cypress-network-idle Plugin](https://youtu.be/E6P_rBt6caU)
 
 ## Install
 
