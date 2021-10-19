@@ -13,8 +13,12 @@
             if (typeof user !== 'object') {
               throw new Error('User is not an object')
             }
-            if (user.name !== 'John Doe') {
-              throw new Error('User name is not John Doe')
+            if (user.name !== 'John Doe' && user.name !== 'Test User') {
+              throw new Error(`Wrong user name "${user.name}`)
+            }
+            // this allows Cypress to access the received object to check it
+            if (window.Cypress) {
+              window.user = user
             }
           })
       })

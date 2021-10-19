@@ -20,3 +20,17 @@ it('starts listening before', () => {
       expect(waited, 'waited').to.be.within(800, 1200)
     })
 })
+
+it('stubs with a fixture', () => {
+  cy.intercept('GET', '/user', { fixture: 'user.json' })
+  cy.visit('/button')
+  cy.waitForNetworkIdlePrepare({
+    method: 'GET',
+    pattern: '/user',
+    alias: 'user',
+  })
+  cy.get('#fetch').click()
+
+  cy.waitForNetworkIdle('@user', 1000)
+  cy.window().its('user').should('deep.equal', { name: 'Test User' })
+})

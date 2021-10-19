@@ -51,3 +51,17 @@ it('the spy on stubbed call', () => {
       expect(callCount, 'callCount').to.equal(0)
     })
 })
+
+it('stubs with an object', () => {
+  cy.intercept('GET', '/user', { name: 'Test User' })
+  cy.visit('/')
+  cy.waitForNetworkIdle('GET', '/user', 1100)
+  cy.window().its('user').should('deep.equal', { name: 'Test User' })
+})
+
+it('stubs with a fixture', () => {
+  cy.intercept('GET', '/user', { fixture: 'user.json' })
+  cy.visit('/')
+  cy.waitForNetworkIdle('GET', '/user', 1100)
+  cy.window().its('user').should('deep.equal', { name: 'Test User' })
+})

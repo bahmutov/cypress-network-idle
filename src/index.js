@@ -40,11 +40,14 @@ function waitForNetworkIdleImpl({ method, pattern, timeLimitMs }) {
   cy.intercept(method, pattern, (req) => {
     counters.callCount += 1
     counters.lastNetworkAt = +new Date()
-    // console.log('out req at ', lastNetworkAt)
-    req.continue(() => {
-      // count the response timestamp
+    // console.log('req %s %s', req.method, req.url, counters.lastNetworkAt)
+
+    // seems using event callbacks allows the other stubs to be called
+    // https://github.com/bahmutov/cypress-network-idle/issues/8
+    req.on('response', (res) => {
       counters.lastNetworkAt = +new Date()
-      // console.log('response at', lastNetworkAt)
+      // console.log('res %s %s', req.method, req.url, counters.lastNetworkAt)
+      // console.log(res.body)
     })
   })
 
@@ -105,11 +108,13 @@ function waitForNetworkIdlePrepare({ method, pattern, alias } = {}) {
   cy.intercept(method, pattern, (req) => {
     counters.callCount += 1
     counters.lastNetworkAt = +new Date()
-    // console.log('out req at ', lastNetworkAt)
-    req.continue(() => {
-      // count the response timestamp
+
+    // seems using event callbacks allows the other stubs to be called
+    // https://github.com/bahmutov/cypress-network-idle/issues/8
+    req.on('response', (res) => {
       counters.lastNetworkAt = +new Date()
-      // console.log('response at', lastNetworkAt)
+      // console.log('res %s %s', req.method, req.url, counters.lastNetworkAt)
+      // console.log(res.body)
     })
   }).as(alias)
 }
