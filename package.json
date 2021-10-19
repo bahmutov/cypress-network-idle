@@ -8,9 +8,11 @@
     "src"
   ],
   "scripts": {
+    "start": "micro-dev ./server",
     "test": "cypress run",
     "cy:open": "cypress open",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "dev": "start-test 3000 cy:open"
   },
   "repository": {
     "type": "git",
@@ -28,7 +30,11 @@
   "homepage": "https://github.com/bahmutov/cypress-network-idle#readme",
   "devDependencies": {
     "cypress": "8.6.0",
+    "micro": "^9.3.4",
+    "micro-dev": "^3.0.0",
+    "micro-route": "^2.5.0",
     "prettier": "^2.4.1",
-    "semantic-release": "18.0.0"
+    "semantic-release": "18.0.0",
+    "start-server-and-test": "^1.14.0"
   }
 }

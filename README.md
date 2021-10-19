@@ -62,6 +62,10 @@ This plugin includes the TypeScript types, import them from your JavaScript file
 /// <reference types="cypress-network-idle" />
 ```
 
+## Discussion
+
+This plugin uses the timestamp of the request and the response to compute the idle timestamp. This helps with any longer-running requests - the idle time is computed from their completion.
+
 ## Small print
 
 Author: Gleb Bahmutov &lt;gleb.bahmutov@gmail.com&gt; &copy; 2021

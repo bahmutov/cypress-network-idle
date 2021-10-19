@@ -22,27 +22,37 @@ function waitForNetworkIdle(a1, a2, a3) {
 
   let callCount = 0
   let lastNetworkAt
-  cy.intercept(method, pattern, () => {
+  cy.intercept(method, pattern, (req) => {
     callCount += 1
     lastNetworkAt = +new Date()
+    // console.log('out req at ', lastNetworkAt)
+    req.continue(() => {
+      // count the response timestamp
+      lastNetworkAt = +new Date()
+      // console.log('response at', lastNetworkAt)
+    })
   })
 
   const started = +new Date()
   let finished
   cy.log(`network idle for ${timeLimitMs} ms`)
-  cy.wrap('waiting...')
-  cy.should(() => {
-    const t = lastNetworkAt || started
-    const elapsed = +new Date() - t
-    if (elapsed < timeLimitMs) {
-      throw new Error('Network is busy')
-    }
-    finished = +new Date()
-  }).then(() => {
-    const waited = finished - started
-    cy.log(`finished after ${waited} ms`)
-    cy.wrap({ started, finished, waited, callCount }, { log: false })
-  })
+  cy.wrap('waiting...', { timeout: timeLimitMs * 3 })
+    .should(() => {
+      const t = lastNetworkAt || started
+      const elapsed = +new Date() - t
+      if (elapsed < timeLimitMs) {
+        // console.log('t =', t)
+        // console.log('elapsed', elapsed)
+        // console.log('timeLimitMs', timeLimitMs)
+        throw new Error('Network is busy')
+      }
+      finished = +new Date()
+    })
+    .then(() => {
+      const waited = finished - started
+      cy.log(`finished after ${waited} ms`)
+      cy.wrap({ started, finished, waited, callCount }, { log: false })
+    })
 }
 
 Cypress.Commands.add('waitForNetworkIdle', waitForNetworkIdle)

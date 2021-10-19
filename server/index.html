@@ -1,0 +1,13 @@
+<html>
+  <head>
+    <title>Example</title>
+  </head>
+  <body>
+    <h1>cypress-network-idle</h1>
+    <script>
+      setTimeout(() => {
+        fetch('/user').then((r) => r.json())
+      }, 1000)
+    </script>
+  </body>
+</html>
