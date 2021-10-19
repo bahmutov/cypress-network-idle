@@ -18,6 +18,12 @@ const htmlDelayed = (req, res) => {
   micro.send(res, 200, text)
 }
 
+const htmlButton = (req, res) => {
+  const filename = path.join(__dirname, 'button.html')
+  const text = fs.readFileSync(filename, 'utf8')
+  micro.send(res, 200, text)
+}
+
 const user = (req, res) => {
   micro.send(res, 200, {
     name: 'John Doe',
@@ -35,6 +41,7 @@ const userDelayed = (req, res) => {
 module.exports = dispatch()
   .dispatch('/', 'GET', html)
   .dispatch('/delayed', 'GET', htmlDelayed)
+  .dispatch('/button', 'GET', htmlButton)
   .dispatch('/user', 'GET', user)
   .dispatch('/user/delayed', 'GET', userDelayed)
   .otherwise(html)
