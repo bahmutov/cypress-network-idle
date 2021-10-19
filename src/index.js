@@ -2,7 +2,8 @@
 
 function waitForIdle(counters, timeLimitMs) {
   counters.started = +new Date()
-  counters.finished
+  counters.finished = null
+
   cy.log(`network idle for ${timeLimitMs} ms`)
   cy.wrap('waiting...', { timeout: timeLimitMs * 3 })
     .should(() => {
