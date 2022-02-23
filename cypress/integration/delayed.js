@@ -20,8 +20,8 @@ it('uses the response timestamp', () => {
 
 it('fails when exceeding timeout', () => {
   const message = 'Timed out retrying after 4000ms: Network is busy'
-  const failed = `Expected to fail with "${message}"`;
-  const passed = `${failed}, but it did not fail`;
+  const failed = `Expected to fail with "${message}"`
+  const passed = `${failed}, but it did not fail`
 
   cy.visit('/delayed')
 
@@ -32,7 +32,7 @@ it('fails when exceeding timeout', () => {
       expect(err.message).to.include(message, failed)
     }
     return false
-  });
+  })
 
   cy.waitForNetworkIdle('GET', '/user/delayed', 3000, { timeout: 4000 })
   cy.then(() => {
