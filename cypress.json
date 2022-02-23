@@ -1,5 +1,5 @@
 {
   "supportFile": false,
   "pluginsFile": false,
-  "baseUrl": "http://localhost:60429"
+  "baseUrl": "http://localhost:3000"
 }
