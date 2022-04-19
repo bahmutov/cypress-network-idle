@@ -5,7 +5,7 @@ import('../../src')
 it('starts listening before', () => {
   cy.visit('/button')
   cy.waitForNetworkIdlePrepare({
-    method: 'GET',
+    method: '*',
     pattern: '/user',
     alias: 'user',
   })

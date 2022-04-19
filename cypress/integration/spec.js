@@ -16,6 +16,20 @@ it('waits for the network call', () => {
     })
 })
 
+it('waits for all the network call methods using a pattern', () => {
+    cy.visit('/')
+
+    cy.waitForNetworkIdle('*', 2000)
+        .should('have.keys', 'started', 'finished', 'waited', 'callCount')
+        .then(({ waited, callCount }) => {
+            // the page makes the Ajax call after 1000 ms
+            // thus total resolve time should be >= 3000 ms
+            // but probably under 4 seconds
+            expect(waited, 'waited ms').to.be.within(3000, 4000)
+            expect(callCount, 'callCount').to.equal(1)
+        })
+})
+
 it('spy works', () => {
   cy.intercept('GET', '**/user').as('testUser')
   cy.visit('/')
@@ -55,13 +69,13 @@ it('the spy on stubbed call', () => {
 it('stubs with an object', () => {
   cy.intercept('GET', '/user', { name: 'Test User' })
   cy.visit('/')
-  cy.waitForNetworkIdle('GET', '/user', 1100)
+  cy.waitForNetworkIdle('*', '/user', 1100)
   cy.window().its('user').should('deep.equal', { name: 'Test User' })
 })
 
 it('stubs with a fixture', () => {
   cy.intercept('GET', '/user', { fixture: 'user.json' })
   cy.visit('/')
-  cy.waitForNetworkIdle('GET', '/user', 1100)
+  cy.waitForNetworkIdle('*', '/user', 1100)
   cy.window().its('user').should('deep.equal', { name: 'Test User' })
 })

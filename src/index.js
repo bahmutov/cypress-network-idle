@@ -38,7 +38,7 @@ function waitForNetworkIdleImpl({ method, pattern, timeLimitMs, timeout }) {
     lastNetworkAt: null,
   }
 
-  cy.intercept(method, pattern, (req) => {
+  cy.intercept({method: method, url: pattern}, (req) => {
     counters.callCount += 1
     counters.lastNetworkAt = +new Date()
     // console.log('req %s %s', req.method, req.url, counters.lastNetworkAt)
@@ -122,7 +122,7 @@ function waitForNetworkIdlePrepare({ method, pattern, alias } = {}) {
   }
   Cypress.env(`networkIdleCounters_${alias}`, counters)
 
-  cy.intercept(method, pattern, (req) => {
+  cy.intercept({method: method, url: pattern}, (req) => {
     counters.callCount += 1
     counters.lastNetworkAt = +new Date()
 
