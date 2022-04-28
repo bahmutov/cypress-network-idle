@@ -4,18 +4,20 @@ function waitForIdle(counters, timeLimitMs, timeout) {
   counters.started = +new Date()
   counters.finished = null
   
-  cy.log(`network idle for ${timeLimitMs} ms`)
+  cy.log(`network idle for ${timeLimitMs} ms (timeout: ${timeout} ms)`)
   cy.wrap('waiting...', { timeout })
     .should(() => {
+      const d = +new Date()
       const t = counters.lastNetworkAt || counters.started
-      const elapsed = +new Date() - t
+      const waited = d - counters.started
+      const elapsed = d - t
       if (elapsed < timeLimitMs) {
         // console.log('t =', t)
         // console.log('elapsed', elapsed)
         // console.log('timeLimitMs', timeLimitMs)
-        throw new Error('Network is busy')
+        throw new Error(`Network is busy.  Failed after ${waited} ms`)
       }
-      counters.finished = +new Date()
+      counters.finished = d
     })
     .then(() => {
       const waited = counters.finished - counters.started
