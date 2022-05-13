@@ -8,11 +8,13 @@
     "src"
   ],
   "scripts": {
-    "start": "micro-dev ./server",
+    "start": "micro-dev --watch server ./server",
     "test": "cypress run",
     "cy:open": "cypress open",
+    "cy:run": "cypress run",
     "semantic-release": "semantic-release",
-    "dev": "start-test 3000 cy:open"
+    "dev": "start-test 3000 cy:open",
+    "ci": "start-test 3000 cy:run"
   },
   "repository": {
     "type": "git",

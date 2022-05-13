@@ -7,7 +7,10 @@ declare namespace Cypress {
      * Wait for the network to be idle for N milliseconds.
      * @param waitMs Milliseconds after the last network call
      */
-    waitForNetworkIdle(waitMs: number, options?: Partial<WaitForNetworkIdleOptions>): Chainable<WaitForNetworkIdleResult>
+    waitForNetworkIdle(
+      waitMs: number,
+      options?: Partial<WaitForNetworkIdleOptions>,
+    ): Chainable<WaitForNetworkIdleResult>
 
     /**
      * Wait for the network to be idle for N milliseconds.
@@ -34,7 +37,7 @@ declare namespace Cypress {
     ): Chainable<WaitForNetworkIdleResult>
 
     waitForNetworkIdlePrepare(
-      options: WaitForNetworkIdleOptions,
+      options: WaitForNetworkIdlePrepareOptions,
     ): Chainable<WaitForNetworkIdleResult>
   }
 
@@ -50,5 +53,11 @@ declare namespace Cypress {
     finished: number
     waited: number
     callCount: number
+  }
+
+  interface WaitForNetworkIdlePrepareOptions {
+    method?: string
+    pattern: string
+    alias: string
   }
 }
