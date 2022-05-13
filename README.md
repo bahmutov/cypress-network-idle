@@ -29,7 +29,7 @@ Wait for two seconds to pass without any network calls (Ajax, static resources)
 cy.waitForNetworkIdle(2000)
 ```
 
-Wait one second without any calls to `/v1/api` endpoint
+Wait one second without any `GET` calls to `/v1/api` endpoint
 
 ```js
 cy.waitForNetworkIdle('/v1/api', 1000)
@@ -40,6 +40,19 @@ Wait for 5 seconds without any `POST` calls to `/graphql` endpoint
 ```js
 cy.waitForNetworkIdle('POST', '/graphql', 5000)
 ```
+
+Wait for 5 seconds for any call (`GET`, `POST`, `PUT`, etc) to any endpoint
+
+```js
+cy.waitForNetworkIdle('*', '*', 5000)
+```
+
+Wait for 5 seconds for any `POST` or `GET` to any endpoint
+
+```js
+cy.waitForNetworkIdle('+(POST|GET)', '*', 5000)
+```
+For pattern matching see more examples in the [`cy.intercept()` documentation](https://docs.cypress.io/api/commands/intercept#Pattern-Matching). 
 
 ## Separate prepare
 
