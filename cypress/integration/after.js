@@ -38,5 +38,7 @@ it('waits for the pending network call', () => {
     .invoke('getEntriesByName', 'http://localhost:3000/after/3000')
     .should('have.length', 1)
     .its('0.duration', { timeout: 0 })
-    .should('be.within', 3000, 3100)
+    // because CI is slower than the local machine
+    // we give it plenty of extra time in this assertion
+    .should('be.within', 3000, 3300)
 })
