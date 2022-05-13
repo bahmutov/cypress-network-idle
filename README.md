@@ -1,4 +1,5 @@
 # cypress-network-idle ![cypress version](https://img.shields.io/badge/cypress-9.6.1-brightgreen) [![renovate-app badge][renovate-badge]][renovate-app] [![ci](https://github.com/bahmutov/cypress-network-idle/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/bahmutov/cypress-network-idle/actions/workflows/ci.yml)
+
 > A little Cypress.io plugin for waiting for network to be idle before continuing with the test
 
 ## Videos
@@ -52,7 +53,8 @@ Wait for 5 seconds for any `POST` or `GET` to any endpoint
 ```js
 cy.waitForNetworkIdle('+(POST|GET)', '*', 5000)
 ```
-For pattern matching see more examples in the [`cy.intercept()` documentation](https://docs.cypress.io/api/commands/intercept#Pattern-Matching). 
+
+For pattern matching see more examples in the [`cy.intercept()` documentation](https://docs.cypress.io/api/commands/intercept#Pattern-Matching).
 
 ## Separate prepare
 
@@ -70,6 +72,10 @@ cy.waitForNetworkIdle('@calls', 1000)
 ```
 
 Notice the use of the alias parameter to correctly listen to the intercepted calls.
+
+## Pending calls
+
+If there are ongoing network calls, this plugin waits for them to resolve before checking for network idle, see the [after.js](./cypress/integration/after.js) spec.
 
 ## Yields
 

@@ -3,7 +3,7 @@
 function waitForIdle(counters, timeLimitMs, timeout) {
   counters.started = +new Date()
   counters.finished = null
-  
+
   cy.log(`network idle for ${timeLimitMs} ms (timeout: ${timeout} ms)`)
   cy.wrap('waiting...', { timeout })
     .should(() => {
@@ -11,12 +11,19 @@ function waitForIdle(counters, timeLimitMs, timeout) {
       const t = counters.lastNetworkAt || counters.started
       const waited = d - counters.started
       const elapsed = d - t
+      if (counters.currentCallCount > 0) {
+        throw new Error(
+          `Found ${counters.currentCallCount} pending network call(s) after ${waited} ms`,
+        )
+      }
+
       if (elapsed < timeLimitMs) {
         // console.log('t =', t)
         // console.log('elapsed', elapsed)
         // console.log('timeLimitMs', timeLimitMs)
-        throw new Error(`Network is busy.  Failed after ${waited} ms`)
+        throw new Error(`Network is busy. Failed after ${waited} ms`)
       }
+
       counters.finished = d
     })
     .then(() => {
@@ -40,7 +47,7 @@ function waitForNetworkIdleImpl({ method, pattern, timeLimitMs, timeout }) {
     lastNetworkAt: null,
   }
 
-  cy.intercept({method: method, url: pattern}, (req) => {
+  cy.intercept({ method: method, url: pattern }, (req) => {
     counters.callCount += 1
     counters.lastNetworkAt = +new Date()
     // console.log('req %s %s', req.method, req.url, counters.lastNetworkAt)
@@ -100,7 +107,7 @@ function waitForNetworkIdle(...args) {
   const { method, pattern, timeLimitMs, timeout } = parseArgs(...args)
 
   if (typeof pattern === 'string' && pattern.startsWith('@')) {
-    const alias = pattern.substr(1)
+    const alias = pattern.slice(1)
 
     const counters = Cypress.env(`networkIdleCounters_${alias}`)
     if (!counters) {
@@ -117,20 +124,28 @@ function waitForNetworkIdlePrepare({ method, pattern, alias } = {}) {
   if (!alias) {
     throw new Error('cypress-network-idle: alias is required')
   }
+  if (!pattern) {
+    throw new Error('cypress-network-idle: URL pattern is required')
+  }
 
   const counters = {
+    // all network calls started after we start waiting
     callCount: 0,
+    // current number of pending calls
+    currentCallCount: 0,
     lastNetworkAt: null,
   }
   Cypress.env(`networkIdleCounters_${alias}`, counters)
 
-  cy.intercept({method: method, url: pattern}, (req) => {
+  cy.intercept({ method: method, url: pattern }, (req) => {
     counters.callCount += 1
+    counters.currentCallCount += 1
     counters.lastNetworkAt = +new Date()
 
     // seems using event callbacks allows the other stubs to be called
     // https://github.com/bahmutov/cypress-network-idle/issues/8
     req.on('response', (res) => {
+      counters.currentCallCount -= 1
       counters.lastNetworkAt = +new Date()
       // console.log('res %s %s', req.method, req.url, counters.lastNetworkAt)
       // console.log(res.body)
