@@ -6,26 +6,8 @@ const path = require('path')
 // to route different requests to their own handlers
 const dispatch = require('micro-route/dispatch')
 
-const html = (req, res) => {
-  const filename = path.join(__dirname, 'index.html')
-  const text = fs.readFileSync(filename, 'utf8')
-  micro.send(res, 200, text)
-}
-
-const htmlDelayed = (req, res) => {
-  const filename = path.join(__dirname, 'delayed.html')
-  const text = fs.readFileSync(filename, 'utf8')
-  micro.send(res, 200, text)
-}
-
-const htmlButton = (req, res) => {
-  const filename = path.join(__dirname, 'button.html')
-  const text = fs.readFileSync(filename, 'utf8')
-  micro.send(res, 200, text)
-}
-
-const htmlAfter = (req, res) => {
-  const filename = path.join(__dirname, 'after.html')
+const sendHtml = (page) => (req, res) => {
+  const filename = path.join(__dirname, page)
   const text = fs.readFileSync(filename, 'utf8')
   micro.send(res, 200, text)
 }
@@ -54,12 +36,13 @@ const afterMs = (req, res, { params }) => {
   }, params.ms)
 }
 
+const html = sendHtml('index.html')
 module.exports = dispatch()
   .dispatch('/', 'GET', html)
-  .dispatch('/delayed', 'GET', htmlDelayed)
-  .dispatch('/button', 'GET', htmlButton)
+  .dispatch('/delayed', 'GET', sendHtml('delayed.html'))
+  .dispatch('/button', 'GET', sendHtml('button.html'))
   .dispatch('/user', 'GET', user)
   .dispatch('/user/delayed', 'GET', userDelayed)
-  .dispatch('/after', 'GET', htmlAfter)
+  .dispatch('/after', 'GET', sendHtml('after.html'))
   .dispatch('/after/:ms', 'GET', afterMs)
   .otherwise(html)
