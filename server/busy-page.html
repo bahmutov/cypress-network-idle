@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <title>Busy page</title>
+  </head>
+  <body>
+    <h1>cypress-network-idle busy page</h1>
+    <script>
+      // make multiple calls on loading the page
+      fetch('/after/1000')
+      setTimeout(() => {
+        fetch('/after/2000')
+      }, 100)
+      setTimeout(() => {
+        fetch('/after/1500')
+      }, 1000)
+    </script>
+  </body>
+</html>
