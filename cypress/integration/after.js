@@ -26,7 +26,7 @@ it('waits for the pending network call', () => {
     .then(({ waited, callCount }) => {
       // the page makes the Ajax call that resolves after 3 seconds
       // with 2 seconds of checking for network idle makes 5 seconds
-      expect(waited, 'waited ms').to.be.within(5000, 6000)
+      expect(waited, 'waited ms').to.be.within(5000, 6500)
       // the document and the Ajax
       expect(callCount, 'callCount').to.equal(2)
     })
@@ -40,5 +40,5 @@ it('waits for the pending network call', () => {
     .its('0.duration', { timeout: 0 })
     // because CI is slower than the local machine
     // we give it plenty of extra time in this assertion
-    .should('be.within', 3000, 3300)
+    .should('be.within', 3000, 3500)
 })

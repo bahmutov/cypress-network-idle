@@ -1,47 +1,41 @@
 /// <reference types="cypress" />
 
-function waitForIdle(counters, timeLimitMs, timeout) {
+function waitForIdle(counters, timeLimitMs, timeout, interval) {
   counters.started = +new Date()
   counters.finished = null
 
   cy.log(`network idle for ${timeLimitMs} ms (timeout: ${timeout} ms)`)
-  cy.wrap('waiting...', { timeout })
-    .should(() => {
-      const d = +new Date()
-      const t = counters.lastNetworkAt || counters.started
-      const waited = d - counters.started
-      const elapsed = d - t
-      if (counters.currentCallCount > 0) {
-        throw new Error(
-          `Found ${counters.currentCallCount} pending network call(s) after ${waited} ms`,
-        )
-      }
+  cy.wrap('waiting...', { timeout }).should(check)
 
-      if (elapsed < timeLimitMs) {
-        // console.log('t =', t)
-        // console.log('elapsed', elapsed)
-        // console.log('timeLimitMs', timeLimitMs)
-        throw new Error(`Network is busy. Failed after ${waited} ms`)
-      }
+  function check() {
+    const d = +new Date()
+    const t = counters.lastNetworkAt || counters.started
+    const waited = d - counters.started
+    const elapsed = d - t
 
-      counters.finished = d
-    })
-    .then(() => {
-      const waited = counters.finished - counters.started
+    if (elapsed > timeLimitMs && !counters.currentCallCount) {
       cy.log(`finished after ${waited} ms`)
       cy.wrap(
         {
           started: counters.started,
-          finished: counters.finished,
+          finished: d,
           waited,
           callCount: counters.callCount,
         },
         { log: false },
       )
-    })
+      return;
+    }
+
+    if (waited > timeout) {
+      throw new Error(`Network is busy. Failed after ${waited} ms`)     
+    }
+
+    cy.wait(interval, { log: false }).then(check)
+  }
 }
 
-function waitForNetworkIdleImpl({ method, pattern, timeLimitMs, timeout }) {
+function waitForNetworkIdleImpl({ method, pattern, timeLimitMs, timeout, interval }) {
   const counters = {
     callCount: 0,
     lastNetworkAt: null,
@@ -61,7 +55,7 @@ function waitForNetworkIdleImpl({ method, pattern, timeLimitMs, timeout }) {
     })
   })
 
-  waitForIdle(counters, timeLimitMs, timeout)
+  waitForIdle(counters, timeLimitMs, timeout, interval)
 }
 
 function parseArgs(a1, a2, a3, a4) {
@@ -69,19 +63,22 @@ function parseArgs(a1, a2, a3, a4) {
   let pattern = '*'
   let timeLimitMs = 2000
   let timeout = Cypress.config('responseTimeout')
+  let interval = 200
 
   if (typeof a1 === 'number') {
     timeLimitMs = a1
     timeout = Math.max(timeout, timeLimitMs * 3)
-    if (typeof a2 === 'object' && a2.timeout) {
-      timeout = a2.timeout
+    if (typeof a2 === 'object') {
+      timeout = a2.timeout || timeout
+      interval = a2.interval || interval
     }
   } else if (typeof a1 === 'string' && typeof a2 === 'number') {
     pattern = a1
     timeLimitMs = a2
     timeout = Math.max(timeout, timeLimitMs * 3)
     if (typeof a3 === 'object' && a3.timeout) {
-      timeout = a3.timeout
+      timeout = a3.timeout || timeout
+      interval = a3.interval || interval
     }
   } else if (typeof a1 === 'string' && typeof a2 === 'string') {
     method = a1
@@ -91,20 +88,22 @@ function parseArgs(a1, a2, a3, a4) {
     }
     timeout = Math.max(timeout, timeLimitMs * 3)
     if (typeof a3 === 'object' && a3.timeout) {
-      timeout = a3.timeout
+      timeout = a3.timeout || timeout
+      interval = a3.interval || interval
     }
     if (typeof a4 === 'object' && a4.timeout) {
-      timeout = a4.timeout
+      timeout = a4.timeout || timeout
+      interval = a4.interval || interval
     }
   } else {
     throw new Error('Invalid arguments')
   }
 
-  return { method, pattern, timeLimitMs, timeout }
+  return { method, pattern, timeLimitMs, timeout, interval }
 }
 
 function waitForNetworkIdle(...args) {
-  const { method, pattern, timeLimitMs, timeout } = parseArgs(...args)
+  const { method, pattern, timeLimitMs, timeout, interval } = parseArgs(...args)
 
   if (typeof pattern === 'string' && pattern.startsWith('@')) {
     const alias = pattern.slice(1)
@@ -114,10 +113,10 @@ function waitForNetworkIdle(...args) {
       throw new Error(`cypress-network-idle: "${alias}" not found`)
     }
 
-    return waitForIdle(counters, timeLimitMs, timeout)
+    return waitForIdle(counters, timeLimitMs, timeout, interval)
   }
 
-  waitForNetworkIdleImpl({ method, pattern, timeLimitMs, timeout })
+  waitForNetworkIdleImpl({ method, pattern, timeLimitMs, timeout, interval })
 }
 
 function waitForNetworkIdlePrepare({ method, pattern, alias } = {}) {
