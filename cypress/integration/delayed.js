@@ -13,7 +13,7 @@ it('uses the response timestamp', () => {
       // thus total resolve time should be:
       // 1000 + 1000 + 3000
       // but probably under 7 seconds
-      expect(waited, 'waited ms').to.be.within(5000, 7000)
+      expect(waited, 'waited ms').to.be.within(5000, 7200)
       expect(callCount, 'callCount').to.equal(1)
     })
 })
@@ -29,13 +29,13 @@ it('works with options object', () => {
       // thus total resolve time should be:
       // 1000 + 1000 + 3000
       // but probably under 7 seconds
-      expect(waited, 'waited ms').to.be.within(5000, 7000)
+      expect(waited, 'waited ms').to.be.within(5000, 7200)
       expect(callCount, 'callCount').to.equal(1)
     })
 })
 
 it('fails when exceeding timeout', () => {
-  const message = 'Timed out retrying after 4000ms: Network is busy'
+  const message = 'Network is busy'
   const failed = `Expected to fail with "${message}"`
   const passed = `${failed}, but it did not fail`
 
