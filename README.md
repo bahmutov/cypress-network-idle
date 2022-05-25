@@ -108,6 +108,21 @@ cy.waitForNetworkIdle(2000)
   .should('be.within', 2000, 3000)
 ```
 
+## Overwrite commands
+
+If you always want to want for network idle when calling `cy.visit` you can overwrite this command using the provided code in [src/register.js](./src/register.js) file
+
+```js
+// your spec
+const { registerVisit } = require('cypress-network-idle/src/register')
+registerVisit({ timeout: 1000 })
+
+it('waits for network idle', () => {
+  cy.visit('/')
+  // the network has been idle for 1 second
+})
+```
+
 ## Types
 
 This plugin includes the TypeScript types, import them from your JavaScript files using the reference types comment or via TS config.
