@@ -6,8 +6,11 @@ function waitForIdle(counters, timeLimitMs, timeout, interval) {
   counters.started = +new Date()
   counters.finished = null
 
-  cy.log(`${logPrefix} for ${timeLimitMs} ms (timeout: ${timeout} ms)`)
-  cy.wrap(`${logPrefix} waiting...`, { timeout }).should(check)
+  const log = 'log' in counters ? counters.log : true
+  if (log) {
+    cy.log(`${logPrefix} for ${timeLimitMs} ms (timeout: ${timeout} ms)`)
+  }
+  cy.wrap(`${logPrefix} waiting...`, { timeout, log }).should(check)
 
   function check() {
     const d = +new Date()
@@ -16,7 +19,9 @@ function waitForIdle(counters, timeLimitMs, timeout, interval) {
     const elapsed = d - t
 
     if (elapsed > timeLimitMs && !counters.currentCallCount) {
-      cy.log(`${logPrefix} finished after ${waited} ms`)
+      if (log) {
+        cy.log(`${logPrefix} finished after ${waited} ms`)
+      }
       cy.wrap(
         {
           started: counters.started,
@@ -43,10 +48,15 @@ function waitForNetworkIdleImpl({
   timeLimitMs,
   timeout,
   interval,
+  log,
 }) {
+  if (typeof log === 'undefined') {
+    log = true
+  }
   const counters = {
     callCount: 0,
     lastNetworkAt: null,
+    log,
   }
 
   cy.intercept({ method: method, url: pattern }, (req) => {
@@ -66,27 +76,34 @@ function waitForNetworkIdleImpl({
   waitForIdle(counters, timeLimitMs, timeout, interval)
 }
 
+function isCommandOptions(x) {
+  return typeof x === 'object' && ('timeout' in x || 'log' in x)
+}
+
 function parseArgs(a1, a2, a3, a4) {
   let method = 'GET'
   let pattern = '*'
   let timeLimitMs = 2000
   let timeout = Cypress.config('responseTimeout')
   let interval = 200
+  let log = true
 
   if (typeof a1 === 'number') {
     timeLimitMs = a1
     timeout = Math.max(timeout, timeLimitMs * 3)
-    if (typeof a2 === 'object') {
+    if (isCommandOptions(a2)) {
       timeout = a2.timeout || timeout
       interval = a2.interval || interval
+      log = 'log' in a2 ? a2.log : log
     }
   } else if (typeof a1 === 'string' && typeof a2 === 'number') {
     pattern = a1
     timeLimitMs = a2
     timeout = Math.max(timeout, timeLimitMs * 3)
-    if (typeof a3 === 'object' && a3.timeout) {
+    if (isCommandOptions(a3)) {
       timeout = a3.timeout || timeout
       interval = a3.interval || interval
+      log = 'log' in a3 ? a3.log : log
     }
   } else if (typeof a1 === 'string' && typeof a2 === 'string') {
     method = a1
@@ -95,23 +112,27 @@ function parseArgs(a1, a2, a3, a4) {
       timeLimitMs = a3
     }
     timeout = Math.max(timeout, timeLimitMs * 3)
-    if (typeof a3 === 'object' && a3.timeout) {
+    if (isCommandOptions(a3)) {
       timeout = a3.timeout || timeout
       interval = a3.interval || interval
+      log = 'log' in a3 ? a3.log : log
     }
-    if (typeof a4 === 'object' && a4.timeout) {
+    if (isCommandOptions(a4)) {
       timeout = a4.timeout || timeout
       interval = a4.interval || interval
+      log = 'log' in a4 ? a4.log : log
     }
   } else {
     throw new Error('Invalid arguments')
   }
 
-  return { method, pattern, timeLimitMs, timeout, interval }
+  return { method, pattern, timeLimitMs, timeout, interval, log }
 }
 
 function waitForNetworkIdle(...args) {
-  const { method, pattern, timeLimitMs, timeout, interval } = parseArgs(...args)
+  const { method, pattern, timeLimitMs, timeout, interval, log } = parseArgs(
+    ...args,
+  )
 
   if (typeof pattern === 'string' && pattern.startsWith('@')) {
     const alias = pattern.slice(1)
@@ -124,15 +145,27 @@ function waitForNetworkIdle(...args) {
     return waitForIdle(counters, timeLimitMs, timeout, interval)
   }
 
-  waitForNetworkIdleImpl({ method, pattern, timeLimitMs, timeout, interval })
+  waitForNetworkIdleImpl({
+    method,
+    pattern,
+    timeLimitMs,
+    timeout,
+    interval,
+    log,
+  })
 }
 
-function waitForNetworkIdlePrepare({ method, pattern, alias } = {}) {
+function waitForNetworkIdlePrepare({ method, pattern, alias, log } = {}) {
   if (!alias) {
     throw new Error('cypress-network-idle: alias is required')
   }
   if (!pattern) {
     throw new Error('cypress-network-idle: URL pattern is required')
+  }
+
+  // by default, we want to log the network activity
+  if (typeof log === 'undefined') {
+    log = true
   }
 
   const counters = {
@@ -141,6 +174,7 @@ function waitForNetworkIdlePrepare({ method, pattern, alias } = {}) {
     // current number of pending calls
     currentCallCount: 0,
     lastNetworkAt: null,
+    log,
   }
   Cypress.env(`networkIdleCounters_${alias}`, counters)
 

@@ -56,6 +56,14 @@ cy.waitForNetworkIdle('+(POST|GET)', '*', 5000)
 
 For pattern matching see more examples in the [`cy.intercept()` documentation](https://docs.cypress.io/api/commands/intercept#Pattern-Matching).
 
+## No logging
+
+You can disable the log messages by adding option object with `{ log: false }` property
+
+```js
+cy.waitForNetworkIdle('/v1/api', 1000, { log: false })
+```
+
 ## Separate prepare
 
 Sometimes the network calls start early. For example, if the network calls are kicked off by the `cy.visit` you want to start capturing the timestamps before it, but wait for the network to be idle after. You can start listening using the `prepare` call like this.
@@ -71,7 +79,16 @@ cy.visit('/')
 cy.waitForNetworkIdle('@calls', 1000)
 ```
 
-Notice the use of the alias parameter to correctly listen to the intercepted calls.
+Notice the use of the alias parameter to correctly listen to the intercepted calls. You can disable logging by adding `log: false` to the prepare call
+
+```js
+cy.waitForNetworkIdlePrepare({
+  method: 'GET',
+  pattern: '*',
+  alias: 'calls',
+  log: false,
+})
+```
 
 ## Pending calls
 

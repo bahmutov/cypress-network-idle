@@ -47,6 +47,7 @@ declare namespace Cypress {
     alias: string
     timeout: number
     interval: number
+    log?: boolean
   }
 
   interface WaitForNetworkIdleResult {
@@ -60,5 +61,6 @@ declare namespace Cypress {
     method?: string
     pattern: string
     alias: string
+    log?: boolean
   }
 }
