@@ -1,11 +1,13 @@
 /// <reference types="cypress" />
 
+const logPrefix = '**network-idle**'
+
 function waitForIdle(counters, timeLimitMs, timeout, interval) {
   counters.started = +new Date()
   counters.finished = null
 
-  cy.log(`network idle for ${timeLimitMs} ms (timeout: ${timeout} ms)`)
-  cy.wrap('waiting...', { timeout }).should(check)
+  cy.log(`${logPrefix} for ${timeLimitMs} ms (timeout: ${timeout} ms)`)
+  cy.wrap(`${logPrefix} waiting...`, { timeout }).should(check)
 
   function check() {
     const d = +new Date()
@@ -14,7 +16,7 @@ function waitForIdle(counters, timeLimitMs, timeout, interval) {
     const elapsed = d - t
 
     if (elapsed > timeLimitMs && !counters.currentCallCount) {
-      cy.log(`finished after ${waited} ms`)
+      cy.log(`${logPrefix} finished after ${waited} ms`)
       cy.wrap(
         {
           started: counters.started,
@@ -24,18 +26,24 @@ function waitForIdle(counters, timeLimitMs, timeout, interval) {
         },
         { log: false },
       )
-      return;
+      return
     }
 
     if (waited > timeout) {
-      throw new Error(`Network is busy. Failed after ${waited} ms`)     
+      throw new Error(`Network is busy. Failed after ${waited} ms`)
     }
 
     cy.wait(interval, { log: false }).then(check)
   }
 }
 
-function waitForNetworkIdleImpl({ method, pattern, timeLimitMs, timeout, interval }) {
+function waitForNetworkIdleImpl({
+  method,
+  pattern,
+  timeLimitMs,
+  timeout,
+  interval,
+}) {
   const counters = {
     callCount: 0,
     lastNetworkAt: null,
