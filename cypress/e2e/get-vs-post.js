@@ -33,4 +33,15 @@ describe('Waiting for POST requests', () => {
       expect(waited, 'waited period').to.be.within(3500, 4500)
     })
   })
+
+  it('waits for specific POST route only using single command', () => {
+    cy.visit('/get-vs-post')
+    // listen to "POST /add-user" calls
+    cy.waitForNetworkIdle('POST', '/add-user', 2000).then(
+      ({ waited, callCount }) => {
+        expect(callCount, 'call count').to.equal(1)
+        expect(waited, 'waited period').to.be.within(3500, 4500)
+      },
+    )
+  })
 })
