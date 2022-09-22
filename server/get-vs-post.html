@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <title>Get vs post</title>
+  </head>
+  <body>
+    <h1>cypress-network-idle page with lots of GET requests</h1>
+    <p>but only a few POST requests</p>
+    <script>
+      // make constant GET requests
+      setInterval(() => {
+        fetch('/user')
+      }, 1000)
+
+      // make a single POST request
+      setTimeout(() => {
+        fetch('/add-user', {
+          method: 'POST',
+        })
+      }, 1500)
+    </script>
+  </body>
+</html>

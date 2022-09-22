@@ -18,6 +18,10 @@ const user = (req, res) => {
   })
 }
 
+const addUser = (req, res) => {
+  micro.send(res, 200)
+}
+
 const userDelayed = (req, res) => {
   setTimeout(() => {
     micro.send(res, 200, {
@@ -46,4 +50,6 @@ module.exports = dispatch()
   .dispatch('/after', 'GET', sendHtml('after.html'))
   .dispatch('/after/:ms', 'GET', afterMs)
   .dispatch('/busy-page', 'GET', sendHtml('busy-page.html'))
+  .dispatch('/get-vs-post', 'GET', sendHtml('get-vs-post.html'))
+  .dispatch('/add-user', 'POST', addUser)
   .otherwise(html)

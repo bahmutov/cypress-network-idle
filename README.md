@@ -108,6 +108,34 @@ cy.waitForNetworkIdle(2000)
   .should('be.within', 2000, 3000)
 ```
 
+## Limit the intercept
+
+You can limit which requests to consider by using `method` and `pattern` parameters. For example, see the spec [get-vs-post.js](./cypress/e2e/get-vs-post.js)
+
+```js
+// listen to all POST calls
+cy.waitForNetworkIdlePrepare({
+  method: 'POST',
+  pattern: '*',
+  alias: 'postCalls',
+})
+
+cy.visit('/get-vs-post')
+cy.waitForNetworkIdle('@postCalls', 2000)
+```
+
+```js
+// listen to "POST /add-user" calls
+cy.waitForNetworkIdlePrepare({
+  method: 'POST',
+  pattern: '/add-user',
+  alias: 'addUser',
+})
+
+cy.visit('/get-vs-post')
+cy.waitForNetworkIdle('@addUser', 2000)
+```
+
 ## Overwrite commands
 
 If you always want to want for network idle when calling `cy.visit` you can overwrite this command using the provided code in [src/register.js](./src/register.js) file
