@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>Three</title>
+  </head>
+  <body>
+    <h1>cypress-network-idle page with 3 calls</h1>
+    <script>
+      // the page makes 3 network calls
+      // each call takes 100ms to complete
+      setTimeout(() => {
+        fetch('/after/100')
+      }, 1000)
+
+      setTimeout(() => {
+        fetch('/after/100')
+      }, 5000)
+
+      setTimeout(() => {
+        fetch('/after/100')
+      }, 10_000)
+    </script>
+  </body>
+</html>
