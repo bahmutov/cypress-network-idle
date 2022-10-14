@@ -34,7 +34,7 @@ it('checks 3 calls separately', () => {
   cy.waitForNetworkIdle('@three', 2000, { timeout: 5_000 })
     .should('include.keys', 'waited', 'callCount')
     .then(({ waited, callCount }) => {
-      expect(waited, 'waited ms').to.be.greaterThan(3000)
+      expect(waited, 'waited ms').to.be.within(2000, 4000)
       expect(callCount, 'callCount').to.equal(1)
     })
     .log('**done waiting 3rd**')
