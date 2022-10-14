@@ -12,6 +12,12 @@ function waitForIdle(counters, timeLimitMs, timeout, interval) {
   }
   cy.wrap(`${logPrefix} waiting...`, { timeout, log }).should(check)
 
+  function resetCounters() {
+    counters.callCount = 0
+    counters.currentCallCount = 0
+    counters.lastNetworkAt = null
+  }
+
   function check() {
     const d = +new Date()
     const t = counters.lastNetworkAt || counters.started
@@ -31,10 +37,12 @@ function waitForIdle(counters, timeLimitMs, timeout, interval) {
         },
         { log: false },
       )
+      resetCounters()
       return
     }
 
     if (waited > timeout) {
+      resetCounters()
       throw new Error(`Network is busy. Failed after ${waited} ms`)
     }
 

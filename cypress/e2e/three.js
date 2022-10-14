@@ -21,11 +21,21 @@ it('checks 3 calls separately', () => {
     .log('**done waiting 1st**')
 
   cy.log('**second call**')
-  cy.waitForNetworkIdle('@three', 2000, { timeout: 3_000 })
-  // .should('include.keys', 'waited', 'callCount')
-  // .then(({ waited, callCount }) => {
-  //   expect(waited, 'waited ms').to.be.within(3000, 3500)
-  //   expect(callCount, 'callCount').to.equal(1)
-  // })
-  // .log('**done waiting 2nd**')
+  cy.waitForNetworkIdle('@three', 2000, { timeout: 5_000 })
+    .should('include.keys', 'waited', 'callCount')
+    .then(({ waited, callCount }) => {
+      expect(waited, 'waited ms').to.be.greaterThan(3000)
+      expect(callCount, 'callCount').to.equal(1)
+    })
+    .log('**done waiting 2nd**')
+  cy.wait(2000)
+
+  cy.log('**third call**')
+  cy.waitForNetworkIdle('@three', 2000, { timeout: 5_000 })
+    .should('include.keys', 'waited', 'callCount')
+    .then(({ waited, callCount }) => {
+      expect(waited, 'waited ms').to.be.greaterThan(3000)
+      expect(callCount, 'callCount').to.equal(1)
+    })
+    .log('**done waiting 3rd**')
 })
