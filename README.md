@@ -90,6 +90,22 @@ cy.waitForNetworkIdlePrepare({
 })
 ```
 
+You can wait multiple times for the prepared network alias.
+
+```js
+cy.waitForNetworkIdlePrepare({
+  method: 'POST',
+  pattern: '/api/graphql',
+  alias: 'graphql',
+})
+cy.visit('/')
+cy.waitForNetworkIdle('@graphql', 1000)
+// the page has fully loaded
+// interact with the page
+cy.waitForNetworkIdle('@graphql', 1000)
+// the page has finished additional processing
+```
+
 ## Pending calls
 
 If there are ongoing network calls, this plugin waits for them to resolve before checking for network idle, see the [after.js](./cypress/integration/after.js) spec.
