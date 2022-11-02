@@ -176,6 +176,17 @@ function waitForNetworkIdlePrepare({ method, pattern, alias, log } = {}) {
     log = true
   }
 
+  const key = `networkIdleCounters_${alias}`
+  // check if the intercept has already been set
+  if (Cypress.env(key)) {
+    const registered = Cypress.env(key)
+    if (registered.method === method && registered.pattern === pattern) {
+      // the same intercept has already been registered
+      // so we should not register the same intercept again
+      return
+    }
+  }
+
   const counters = {
     // all network calls started after we start waiting
     callCount: 0,
@@ -183,10 +194,12 @@ function waitForNetworkIdlePrepare({ method, pattern, alias, log } = {}) {
     currentCallCount: 0,
     lastNetworkAt: null,
     log,
+    method,
+    pattern,
   }
-  Cypress.env(`networkIdleCounters_${alias}`, counters)
+  Cypress.env(key, counters)
 
-  cy.intercept({ method: method, url: pattern }, (req) => {
+  cy.intercept({ method, url: pattern }, (req) => {
     counters.callCount += 1
     counters.currentCallCount += 1
     counters.lastNetworkAt = +new Date()
