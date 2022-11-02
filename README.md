@@ -106,6 +106,30 @@ cy.waitForNetworkIdle('@graphql', 1000)
 // the page has finished additional processing
 ```
 
+## Multiple registrations
+
+If you try to register the same intercept method, pattern, and alias multiple times, only a single first registration will be made.
+
+```js
+cy.waitForNetworkIdlePrepare({
+  method: 'GET',
+  pattern: '/user',
+  alias: 'user',
+})
+// this registration will be ignored
+cy.waitForNetworkIdlePrepare({
+  method: 'GET',
+  pattern: '/user',
+  alias: 'user',
+})
+// this registration will be ignored
+cy.waitForNetworkIdlePrepare({
+  method: 'GET',
+  pattern: '/user',
+  alias: 'user',
+})
+```
+
 ## Pending calls
 
 If there are ongoing network calls, this plugin waits for them to resolve before checking for network idle, see the [after.js](./cypress/integration/after.js) spec.
