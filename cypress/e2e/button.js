@@ -17,7 +17,7 @@ it('starts listening before', () => {
       // the expected time is a little tricky, since it might have
       // finished _before_ the cy.waitForNetworkIdle was called
       // so let's give it a range around the 1 second mark
-      expect(waited, 'waited').to.be.within(800, 1200)
+      expect(waited, 'waited').to.be.within(800, 1500)
     })
 })
 

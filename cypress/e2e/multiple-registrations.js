@@ -3,9 +3,18 @@
 
 import '../..'
 
+function getIntercepts() {
+  return cy
+    .wrap(Cypress.env())
+    .then(Object.keys)
+    .then((list) => {
+      return list.filter((key) => key.startsWith('networkIdleCounters_'))
+    })
+}
+
 it('registers once', () => {
   cy.visit('/button')
-  cy.wrap(Cypress.env()).then(Object.keys).should('have.length', 0)
+  getIntercepts().should('have.length', 0)
   cy.waitForNetworkIdlePrepare({
     method: 'GET',
     pattern: '/user',
@@ -21,11 +30,11 @@ it('registers once', () => {
     pattern: '/user',
     alias: 'user',
   })
-  cy.wrap(Cypress.env()).then(Object.keys).should('have.length', 1)
+  getIntercepts().should('have.length', 1)
   cy.get('#fetch').click()
   cy.waitForNetworkIdle('@user', 1000).then(({ callCount, waited }) => {
     expect(callCount, 'call count').to.equal(1)
     expect(waited, 'waited ms').to.be.above(1000)
   })
-  cy.wrap(Cypress.env()).then(Object.keys).should('have.length', 1)
+  getIntercepts().should('have.length', 1)
 })
