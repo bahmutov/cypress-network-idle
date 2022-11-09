@@ -1,0 +1,14 @@
+<html>
+  <head>
+    <title>Four seconds</title>
+  </head>
+  <body>
+    <h1>cypress-network-idle page</h1>
+    <p>This page makes a single Ajax call 4 seconds after it loads.</p>
+    <script>
+      setTimeout(() => {
+        fetch('/after/100')
+      }, 4000)
+    </script>
+  </body>
+</html>
