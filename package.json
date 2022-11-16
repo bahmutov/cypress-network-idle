@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/bahmutov/cypress-network-idle#readme",
   "devDependencies": {
-    "cypress": "11.0.1",
+    "cypress": "11.1.0",
     "micro": "^9.3.4",
     "micro-dev": "^3.0.0",
     "micro-route": "^2.5.0",
