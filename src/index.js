@@ -10,7 +10,7 @@ function waitForIdle(counters, timeLimitMs, timeout, interval) {
   if (log) {
     cy.log(`${logPrefix} for ${timeLimitMs} ms (timeout: ${timeout} ms)`)
   }
-  cy.wrap(`${logPrefix} waiting...`, { timeout, log }).should(check)
+  cy.wrap(`${logPrefix} waiting...`, { timeout, log }).then(check)
 
   function resetCounters() {
     counters.callCount = 0
