@@ -4,5 +4,17 @@
   </head>
   <body>
     <h1>cypress-network-idle after</h1>
+    <button id="fetch">Fetch</button>
+    <p>
+      Wait for N milliseconds before making the call
+      <input type="number" id="fetch-delay" value="0" />
+    </p>
+    <script>
+      document.getElementById('fetch').addEventListener('click', () => {
+        const delayEl = document.getElementById('fetch-delay')
+        const delay = delayEl.valueAsNumber || 100
+        fetch('/after/' + delay)
+      })
+    </script>
   </body>
 </html>

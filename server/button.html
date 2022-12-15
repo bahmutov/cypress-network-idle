@@ -5,9 +5,14 @@
   <body>
     <h1>cypress-network-idle button</h1>
     <button id="fetch">Fetch</button>
+    <p>
+      Wait for N milliseconds before making the call
+      <input type="number" id="fetch-delay" value="0" />
+    </p>
     <script>
+      const delayEl = document.getElementById('fetch-delay')
       document.getElementById('fetch').addEventListener('click', () => {
-        // a tiny async delay
+        const delay = delayEl.valueAsNumber || 100
         setTimeout(() => {
           fetch('/user')
             .then((r) => r.json())
@@ -23,7 +28,7 @@
                 window.user = user
               }
             })
-        }, 100)
+        }, delay)
       })
     </script>
   </body>
