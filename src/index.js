@@ -150,6 +150,7 @@ function waitForNetworkIdle(...args) {
       throw new Error(`cypress-network-idle: "${alias}" not found`)
     }
 
+    // console.log({ alias, counters: structuredClone(counters) })
     return waitForIdle(counters, timeLimitMs, timeout, interval)
   }
 
@@ -203,6 +204,7 @@ function waitForNetworkIdlePrepare({ method, pattern, alias, log } = {}) {
     counters.callCount += 1
     counters.currentCallCount += 1
     counters.lastNetworkAt = +new Date()
+    // console.log('called', method, pattern)
 
     // seems using event callbacks allows the other stubs to be called
     // https://github.com/bahmutov/cypress-network-idle/issues/8
