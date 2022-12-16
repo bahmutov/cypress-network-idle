@@ -2,6 +2,18 @@
 
 const logPrefix = '**network-idle**'
 
+// reset all counters after every test
+// because Cypress resets all intercepts
+// https://github.com/bahmutov/cypress-network-idle/issues/54
+Cypress.on('test:after:run', () => {
+  const env = Cypress.env()
+  Cypress._.each(env, (value, key) => {
+    if (key.startsWith('networkIdleCounters_')) {
+      delete env[key]
+    }
+  })
+})
+
 function waitForIdle(counters, timeLimitMs, timeout, interval) {
   counters.started = +new Date()
   counters.finished = null
@@ -176,6 +188,8 @@ function waitForNetworkIdlePrepare({ method, pattern, alias, log } = {}) {
   if (typeof log === 'undefined') {
     log = true
   }
+
+  Cypress.log({ name: 'network-idle', message: `prepared for **@${alias}**` })
 
   const key = `networkIdleCounters_${alias}`
   // check if the intercept has already been set
