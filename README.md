@@ -144,6 +144,25 @@ cy.waitForNetworkIdlePrepare({
 
 ![The test fails when one of the calls receives 500 from the server](./images/5xx.png)
 
+### failOn
+
+You can write your own callback function `failOn(req, res)` to decide if the network call should fail the test. Can be useful to include additional information in the error message. For example, let's include the custom message headers:
+
+```js
+cy.waitForNetworkIdlePrepare({
+  method: 'POST',
+  alias: 'post',
+  pattern: '/status-401',
+  failOn(req, res) {
+    if (res.statusCode === 401) {
+      return `Call ${req.method} ${req.url} (x flag ${req.headers['x-my-flag']}) failed`
+    }
+  },
+})
+```
+
+All you need to do to fail the test is return an error message from the synchronous callback.
+
 ## Multiple registrations
 
 If you try to register the same intercept method, pattern, and alias multiple times, only a single first registration will be made.
