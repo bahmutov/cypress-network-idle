@@ -2,20 +2,14 @@ name: ci
 on: [push, pull_request]
 jobs:
   tests:
-    runs-on: ubuntu-20.04
-
-    steps:
-      - name: Checkout 🛎
-        uses: actions/checkout@v3
-
-      - name: Cypress tests 🧪
-        uses: cypress-io/github-action@v5
-        with:
-          start: npm start
-          wait-on: 'http://localhost:3000'
-          record: true
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+    # https://github.com/bahmutov/cypress-workflows
+    uses: bahmutov/cypress-workflows/.github/workflows/parallel.yml@v1
+    with:
+      n: 3
+      start: npm start
+      wait-on: 'http://localhost:3000'
+    secrets:
+      recordKey: ${{ secrets.CYPRESS_RECORD_KEY }}
 
   release:
     runs-on: ubuntu-20.04
