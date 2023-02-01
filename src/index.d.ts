@@ -5,6 +5,20 @@
 // since it seems to break the global interface merging
 // so let's just type the basics of request and response
 
+type ResourceType =
+  | 'document'
+  | 'fetch'
+  | 'xhr'
+  | 'websocket'
+  | 'stylesheet'
+  | 'script'
+  | 'image'
+  | 'font'
+  | 'cspviolationreport'
+  | 'ping'
+  | 'manifest'
+  | 'other'
+
 interface BaseMessage {
   /**
    * The body of the HTTP message.
