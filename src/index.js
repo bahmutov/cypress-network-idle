@@ -176,7 +176,13 @@ function waitForNetworkIdle(...args) {
   })
 }
 
-function waitForNetworkIdlePrepare({ method, pattern, alias, log } = {}) {
+function waitForNetworkIdlePrepare({
+  method,
+  pattern,
+  alias,
+  log,
+  failOn5xx,
+} = {}) {
   if (!alias) {
     throw new Error('cypress-network-idle: alias is required')
   }
@@ -189,7 +195,11 @@ function waitForNetworkIdlePrepare({ method, pattern, alias, log } = {}) {
     log = true
   }
 
-  Cypress.log({ name: 'network-idle', message: `prepared for **@${alias}**` })
+  let message = `prepared for **@${alias}**`
+  if (failOn5xx) {
+    message += ' (will fail on **5xx**)'
+  }
+  Cypress.log({ name: 'network-idle', message })
 
   const key = `networkIdleCounters_${alias}`
   // check if the intercept has already been set
@@ -227,6 +237,11 @@ function waitForNetworkIdlePrepare({ method, pattern, alias, log } = {}) {
       counters.lastNetworkAt = +new Date()
       // console.log('res %s %s', req.method, req.url, counters.lastNetworkAt)
       // console.log(res.body)
+      if (failOn5xx && res.statusCode >= 500) {
+        throw new Error(
+          `Network call ${req.method} ${req.url} failed with ${res.statusCode}`,
+        )
+      }
     })
   }).as(alias)
 }

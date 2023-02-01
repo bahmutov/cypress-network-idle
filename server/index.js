@@ -40,6 +40,12 @@ const afterMs = (req, res, { params }) => {
   }, params.ms)
 }
 
+const send = (statusCode) => (req, res) => {
+  setTimeout(() => {
+    micro.send(res, statusCode, `Server says ${statusCode}`)
+  }, 500)
+}
+
 const html = sendHtml('index.html')
 module.exports = dispatch()
   .dispatch('/', 'GET', html)
@@ -53,5 +59,8 @@ module.exports = dispatch()
   .dispatch('/four-seconds', 'GET', sendHtml('four-seconds.html'))
   .dispatch('/busy-page', 'GET', sendHtml('busy-page.html'))
   .dispatch('/get-vs-post', 'GET', sendHtml('get-vs-post.html'))
+  .dispatch('/status-401', 'GET', send(401))
+  .dispatch('/status-500', 'GET', send(500))
+  .dispatch('/fail-500', 'GET', sendHtml('fail-500.html'))
   .dispatch('/add-user', 'POST', addUser)
   .otherwise(html)

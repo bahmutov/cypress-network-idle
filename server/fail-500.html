@@ -1,0 +1,15 @@
+<body>
+  <p>
+    This page makes a request that receives 500. It also makes another request
+    that receives 401.
+  </p>
+  <script>
+    setTimeout(() => {
+      fetch('/status-401')
+    }, 300)
+
+    setTimeout(() => {
+      fetch('/status-500')
+    }, 800)
+  </script>
+</body>
