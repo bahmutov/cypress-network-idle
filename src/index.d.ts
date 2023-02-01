@@ -68,6 +68,11 @@ declare namespace Cypress {
     log?: boolean
     /**
      * Fail the test if any of the matching network calls
+     * returns 4xx status code
+     */
+    failOn4xx?: boolean
+    /**
+     * Fail the test if any of the matching network calls
      * returns 5xx status code
      */
     failOn5xx?: boolean

@@ -182,6 +182,7 @@ function waitForNetworkIdlePrepare({
   alias,
   log,
   failOn5xx,
+  failOn4xx,
 } = {}) {
   if (!alias) {
     throw new Error('cypress-network-idle: alias is required')
@@ -196,7 +197,11 @@ function waitForNetworkIdlePrepare({
   }
 
   let message = `prepared for **@${alias}**`
-  if (failOn5xx) {
+  if (failOn5xx && failOn4xx) {
+    message += ' (will fail on **4xx, 5xx**)'
+  } else if (failOn4xx) {
+    message += ' (will fail on **4xx**)'
+  } else if (failOn5xx) {
     message += ' (will fail on **5xx**)'
   }
   Cypress.log({ name: 'network-idle', message })
@@ -237,6 +242,11 @@ function waitForNetworkIdlePrepare({
       counters.lastNetworkAt = +new Date()
       // console.log('res %s %s', req.method, req.url, counters.lastNetworkAt)
       // console.log(res.body)
+      if (failOn4xx && res.statusCode >= 400 && res.statusCode < 500) {
+        throw new Error(
+          `Network call ${req.method} ${req.url} failed with ${res.statusCode}`,
+        )
+      }
       if (failOn5xx && res.statusCode >= 500) {
         throw new Error(
           `Network call ${req.method} ${req.url} failed with ${res.statusCode}`,
