@@ -183,6 +183,7 @@ function waitForNetworkIdlePrepare({
   log,
   failOn5xx,
   failOn4xx,
+  failOn,
 } = {}) {
   if (!alias) {
     throw new Error('cypress-network-idle: alias is required')
@@ -191,8 +192,13 @@ function waitForNetworkIdlePrepare({
     throw new Error('cypress-network-idle: URL pattern is required')
   }
 
-  // by default, we want to log the network activity
+  if (failOn) {
+    if (typeof failOn !== 'function') {
+      throw new Error('cypress-network-idle: expected failOn to be a function')
+    }
+  }
   if (typeof log === 'undefined') {
+    // by default, we want to log the network activity
     log = true
   }
 
@@ -242,6 +248,14 @@ function waitForNetworkIdlePrepare({
       counters.lastNetworkAt = +new Date()
       // console.log('res %s %s', req.method, req.url, counters.lastNetworkAt)
       // console.log(res.body)
+      if (failOn) {
+        // let the user decide if we need to fail the test
+        const message = failOn(req, res)
+        if (message) {
+          throw new Error(message)
+        }
+      }
+
       if (failOn4xx && res.statusCode >= 400 && res.statusCode < 500) {
         throw new Error(
           `Network call ${req.method} ${req.url} failed with ${res.statusCode}`,

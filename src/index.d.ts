@@ -76,5 +76,12 @@ declare namespace Cypress {
      * returns 5xx status code
      */
     failOn5xx?: boolean
+    /**
+     * Fail the test if this callback returns an error string.
+     */
+    failOn?: (
+      req: CyHttpMessages.IncomingHttpRequest,
+      res: CyHttpMessages.IncomingHttpResponse,
+    ) => string | undefined
   }
 }
