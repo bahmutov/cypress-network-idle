@@ -36,6 +36,10 @@ declare namespace Cypress {
       options?: Partial<WaitForNetworkIdleOptions>,
     ): Chainable<WaitForNetworkIdleResult>
 
+    /**
+     * Starts spying on the matching network calls
+     * @see https://github.com/bahmutov/cypress-network-idle#readme
+     */
     waitForNetworkIdlePrepare(
       options: WaitForNetworkIdlePrepareOptions,
     ): Chainable<WaitForNetworkIdleResult>
@@ -62,5 +66,10 @@ declare namespace Cypress {
     pattern: string
     alias: string
     log?: boolean
+    /**
+     * Fail the test if any of the matching network calls
+     * returns 5xx status code
+     */
+    failOn5xx?: boolean
   }
 }
