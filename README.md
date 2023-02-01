@@ -110,9 +110,26 @@ cy.waitForNetworkIdle('@graphql', 1000)
 // the page has finished additional processing
 ```
 
-### fail on 5xx
+### fail on error status code
 
 By default, the network calls might fail and the test happily continues. You can make the idle spy fail if any of the matching network calls return 4xx or 5xx errors. These classes of error status code have their own flag to enable.
+
+### fail on 4xx
+
+```js
+// fail the test if any of the matching calls
+// returns a 4xx status code
+cy.waitForNetworkIdlePrepare({
+  method: '*',
+  alias: 'all',
+  pattern: '**',
+  failOn4xx: true,
+})
+```
+
+![The test fails when one of the calls receives 401 from the server](./images/4xx.png)
+
+### fail on 5xx
 
 ```js
 // fail the test if any of the matching calls
