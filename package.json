@@ -36,7 +36,7 @@
     "micro-dev": "^3.0.0",
     "micro-route": "^2.5.0",
     "prettier": "^2.4.1",
-    "semantic-release": "21.0.0",
+    "semantic-release": "21.0.1",
     "start-server-and-test": "^1.14.0"
   }
 }
