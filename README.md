@@ -189,7 +189,7 @@ cy.waitForNetworkIdlePrepare({
 
 ## Pending calls
 
-If there are ongoing network calls, this plugin waits for them to resolve before checking for network idle, see the [after.js](./cypress/integration/after.js) spec.
+If there are ongoing network calls, this plugin waits for them to resolve before checking for network idle, see the [after.js](./cypress/e2e/after.js) spec.
 
 ## Yields
 
