@@ -1,4 +1,4 @@
-# cypress-network-idle ![cypress version](https://img.shields.io/badge/cypress-13.13.3-brightgreen) [![renovate-app badge][renovate-badge]][renovate-app] [![ci](https://github.com/bahmutov/cypress-network-idle/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/bahmutov/cypress-network-idle/actions/workflows/ci.yml)
+# cypress-network-idle ![cypress version](https://img.shields.io/badge/cypress-13.14.0-brightgreen) [![renovate-app badge][renovate-badge]][renovate-app] [![ci](https://github.com/bahmutov/cypress-network-idle/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/bahmutov/cypress-network-idle/actions/workflows/ci.yml)
 
 > A little Cypress.io plugin for waiting for network to be idle before continuing with the test
 
