@@ -6,7 +6,7 @@ import '../..'
 it('waits for the network call', () => {
   cy.visit('/')
 
-  cy.waitForNetworkIdle(2000)
+  cy.waitForNetworkIdle(4000)
     .should('have.keys', 'started', 'finished', 'waited', 'callCount')
     .then(({ waited, callCount }) => {
       // the page makes the Ajax call after 1000 ms
