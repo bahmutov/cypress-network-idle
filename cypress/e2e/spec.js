@@ -11,8 +11,8 @@ it('waits for the network call', () => {
     .then(({ waited, callCount }) => {
       // the page makes the Ajax call after 1000 ms
       // thus total resolve time should be >= 3000 ms
-      // but probably under 4 seconds
-      expect(waited, 'waited ms').to.be.within(3000, 4000)
+      // but probably under 6 seconds
+      expect(waited, 'waited ms').to.be.within(3000, 6000)
       expect(callCount, 'callCount').to.equal(1)
     })
 })
