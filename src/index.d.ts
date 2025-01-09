@@ -116,6 +116,7 @@ declare namespace Cypress {
      * @param method HTTP method to spy on
      * @param pattern URL pattern to spy on
      * @param waitMs Milliseconds after the last network call
+     * @param options Additional network options
      */
     waitForNetworkIdle(
       method: string,
@@ -137,6 +138,13 @@ declare namespace Cypress {
     method?: string
     pattern: string
     alias: string
+    /**
+     * Max time limit for waiting for the idle network period, ms
+     * @example
+     *  // wait for a 1-second idle period
+     *  // max waiting time is 5 seconds
+     *  cy.waitForNetworkIdle(1000, '*', { timeout: 5000 })
+     */
     timeout: number
     interval: number
     log?: boolean
