@@ -1,4 +1,5 @@
 /// <reference path="../../src/index.d.ts" />
+// @ts-check
 
 import '../..'
 
@@ -86,5 +87,12 @@ it('no logging', () => {
   // by default, we log additional information when waiting
   // you can disable logging by explicitly passing `{ log: false }`
   cy.waitForNetworkIdle('*', '/user', 1100, { log: false })
+  cy.window().its('user').should('deep.equal', { name: 'Test User' })
+})
+
+it('waits for up to a minute', () => {
+  cy.intercept('GET', '/user', { name: 'Test User' })
+  cy.visit('/')
+  cy.waitForNetworkIdle('*', '/user', 1100, { timeout: 60_000 })
   cy.window().its('user').should('deep.equal', { name: 'Test User' })
 })

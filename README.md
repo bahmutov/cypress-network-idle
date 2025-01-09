@@ -60,6 +60,22 @@ cy.waitForNetworkIdle('+(POST|GET)', '*', 5000)
 
 For pattern matching see more examples in the [`cy.intercept()` documentation](https://docs.cypress.io/api/commands/intercept#Pattern-Matching).
 
+## Timeouts
+
+Let's take this example
+
+```js
+cy.waitForNetworkIdle('POST', '/graphql', 5000)
+```
+
+The `5000` argument is the wait number in milliseconds. The command will check for 5 seconds with _no_ `POST /graphql` calls. But how long do we need to wait for those idle 5 seconds? By default, it is the maximum of `Cypress.config('responseTimeout')` value (usually 30 seconds in Cypress) and the three times the wait amount (in our case 15 seconds).
+
+You can set a longer time limit for waiting for network to be idle for 5 seconds. Let's wait for up to a minute for 5 second idle period:
+
+```js
+cy.waitForNetworkIdle('POST', '/graphql', 5000, { timeout: 60_000 })
+```
+
 ## No logging
 
 You can disable the log messages by adding option object with `{ log: false }` property
