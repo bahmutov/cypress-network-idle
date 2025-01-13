@@ -82,6 +82,7 @@ function waitForNetworkIdleImpl({
     callCount: 0,
     lastNetworkAt: null,
     log,
+    outstandingNetworkRequests: [],
   }
 
   cy.intercept({ method: method, url: pattern }, (req) => {
