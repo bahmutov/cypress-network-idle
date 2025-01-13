@@ -264,6 +264,12 @@ it('waits for network idle', () => {
 })
 ```
 
+## Error message
+
+If waiting for all network calls to finish and for network to be idle for N milliseconds fails, the plugin prints all outstanding (current) network calls
+
+![Outstanding network calls](./images/outstanding-calls.png)
+
 ## Types
 
 This plugin includes the TypeScript types, import them from your JavaScript files using the reference types comment or via TS config.
