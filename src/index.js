@@ -28,6 +28,7 @@ function waitForIdle(counters, timeLimitMs, timeout, interval) {
     counters.callCount = 0
     counters.currentCallCount = 0
     counters.lastNetworkAt = null
+    counters.outstandingNetworkRequests.length = 0
   }
 
   function check() {
@@ -54,8 +55,12 @@ function waitForIdle(counters, timeLimitMs, timeout, interval) {
     }
 
     if (waited > timeout) {
+      const outstandingRequests = counters.outstandingNetworkRequests
+        .map((net) => `${net.method} ${net.url}`)
+        .join('\n')
       resetCounters()
-      throw new Error(`Network is busy. Failed after ${waited} ms`)
+      const errorMessage = `Network is busy. Failed after ${waited} ms\nOutstanding network calls:\n${outstandingRequests}`
+      throw new Error(errorMessage)
     }
 
     cy.wait(interval, { log: false }).then(check)
@@ -232,6 +237,7 @@ function waitForNetworkIdlePrepare({
     log,
     method,
     pattern,
+    outstandingNetworkRequests: [],
   }
   Cypress.env(key, counters)
 
@@ -239,6 +245,10 @@ function waitForNetworkIdlePrepare({
     counters.callCount += 1
     counters.currentCallCount += 1
     counters.lastNetworkAt = +new Date()
+    counters.outstandingNetworkRequests.push({
+      method: req.method,
+      url: req.url,
+    })
     // console.log('called', method, pattern)
 
     // seems using event callbacks allows the other stubs to be called
@@ -246,6 +256,11 @@ function waitForNetworkIdlePrepare({
     req.on('response', (res) => {
       counters.currentCallCount -= 1
       counters.lastNetworkAt = +new Date()
+      Cypress._.remove(counters.outstandingNetworkRequests, {
+        method: req.method,
+        url: req.url,
+      })
+
       // console.log('res %s %s', req.method, req.url, counters.lastNetworkAt)
       // console.log(res.body)
       if (failOn) {
