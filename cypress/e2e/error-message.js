@@ -14,7 +14,8 @@ it('times out and throw an error', () => {
 
   // do not give the page enough time to finish all network calls
   // enable to see the error message
-  const timeout = 2000
-  // const timeout = 5000
+  // const timeout = 2000
+  // give the page enough time to finish all network calls
+  const timeout = 5000
   cy.waitForNetworkIdle('@visit', 1000, { timeout })
 })
