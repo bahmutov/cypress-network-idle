@@ -5,7 +5,7 @@ import '../..'
 
 function getIntercepts() {
   return cy
-    .wrap(Cypress.env())
+    .wrap(Cypress.expose())
     .then(Object.keys)
     .then((list) => {
       return list.filter((key) => key.startsWith('networkIdleCounters_'))
