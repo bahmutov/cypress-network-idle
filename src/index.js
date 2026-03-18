@@ -6,10 +6,10 @@ const logPrefix = '**network-idle**'
 // because Cypress resets all intercepts
 // https://github.com/bahmutov/cypress-network-idle/issues/54
 Cypress.on('test:after:run', () => {
-  const env = Cypress.env()
+  const env = Cypress.expose()
   Cypress._.each(env, (value, key) => {
     if (key.startsWith('networkIdleCounters_')) {
-      delete env[key]
+      Cypress.expose(key, null)
     }
   })
 })
@@ -163,7 +163,7 @@ function waitForNetworkIdle(...args) {
   if (typeof pattern === 'string' && pattern.startsWith('@')) {
     const alias = pattern.slice(1)
 
-    const counters = Cypress.env(`networkIdleCounters_${alias}`)
+    const counters = Cypress.expose(`networkIdleCounters_${alias}`)
     if (!counters) {
       throw new Error(`cypress-network-idle: "${alias}" not found`)
     }
@@ -220,8 +220,8 @@ function waitForNetworkIdlePrepare({
 
   const key = `networkIdleCounters_${alias}`
   // check if the intercept has already been set
-  if (Cypress.env(key)) {
-    const registered = Cypress.env(key)
+  if (Cypress.expose(key)) {
+    const registered = Cypress.expose(key)
     if (registered.method === method && registered.pattern === pattern) {
       // the same intercept has already been registered
       // so we should not register the same intercept again
@@ -240,7 +240,7 @@ function waitForNetworkIdlePrepare({
     pattern,
     outstandingNetworkRequests: [],
   }
-  Cypress.env(key, counters)
+  Cypress.expose(key, counters)
 
   cy.intercept({ method, url: pattern }, (req) => {
     counters.callCount += 1
