@@ -12,19 +12,19 @@ jobs:
       recordKey: ${{ secrets.CYPRESS_RECORD_KEY }}
 
   release:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: ['tests']
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v4
+        # https://github.com/actions/checkout
+        uses: actions/checkout@v6
 
       - name: Semantic Release 🚀
-        uses: cycjimmy/semantic-release-action@v4
+        # https://github.com/cycjimmy/semantic-release-action
+        uses: cycjimmy/semantic-release-action@v6
         with:
           branches: main
         env:
           # github token is automatically created by the GH Action workflow
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # created using semantic-release
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
