@@ -15,6 +15,15 @@ jobs:
     runs-on: ubuntu-24.04
     needs: ['tests']
     if: github.ref == 'refs/heads/main'
+    permissions:
+      # allow the release step to comment on
+      # issues, pull requests, and write to the repo
+      contents: write
+      issues: write
+      pull-requests: write
+      # Required for OIDC to let NPM registry know
+      # that this workflow is trusted
+      id-token: write
     steps:
       - name: Checkout 🛎
         # https://github.com/actions/checkout
