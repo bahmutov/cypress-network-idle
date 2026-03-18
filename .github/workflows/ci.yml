@@ -3,7 +3,7 @@ on: [push, pull_request]
 jobs:
   tests:
     # https://github.com/bahmutov/cypress-workflows
-    uses: bahmutov/cypress-workflows/.github/workflows/parallel.yml@v1
+    uses: bahmutov/cypress-workflows/.github/workflows/parallel.yml@v2
     with:
       n: 3
       start: npm start
