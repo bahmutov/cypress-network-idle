@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Update version badges 🏷
         run: npx -p dependency-version-badge update-badge cypress
